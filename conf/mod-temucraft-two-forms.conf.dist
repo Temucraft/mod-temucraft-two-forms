@@ -1,0 +1,31 @@
+[worldserver]
+
+#
+#    Temucraft.TwoForms.Enable
+#        Description: Two Forms puts Worgen in the human player body, with their gear and a human look of their own.
+#        Default:     1
+
+Temucraft.TwoForms.Enable = 1
+
+#
+#    Temucraft.TwoForms.Race
+#        Description: The Worgen race id (ChrRaces), as set in mod-worgoblin-high-elf.
+#        Default:     12
+
+Temucraft.TwoForms.Race = 12
+
+#
+#    Temucraft.TwoForms.HumanMaleDisplay
+#    Temucraft.TwoForms.HumanFemaleDisplay
+#        Description: The human player bodies (the displays a human character has).
+#        Default:     49, 50
+
+Temucraft.TwoForms.HumanMaleDisplay = 49
+Temucraft.TwoForms.HumanFemaleDisplay = 50
+
+#
+#    Temucraft.TwoForms.WorgenInCombat
+#        Description: Entering combat (or casting Darkflight) turns a Worgen back, as in Cataclysm.
+#        Default:     1
+
+Temucraft.TwoForms.WorgenInCombat = 1
