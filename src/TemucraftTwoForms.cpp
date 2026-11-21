@@ -131,7 +131,7 @@ namespace
             ToHuman(player, s);   // so every change shows at once
         ClearGossipMenuFor(player);
         char const* names[5] = { T(player, 1, "Skin colour"), T(player, 2, "Face"), T(player, 3, "Hair style"),
-                                 T(player, 4, "Hair colour"), T(player, 5, player->getGender() == GENDER_FEMALE ? "Earrings and markings" : "Beard") };
+                                 T(player, 4, "Hair colour"), player->getGender() == GENDER_FEMALE ? T(player, 11, "Earrings and markings") : T(player, 5, "Beard") };
         uint8 const* values[5] = { &s.human.skin, &s.human.face, &s.human.hair, &s.human.color, &s.human.facial };
         uint8 const* lim = LIMITS[player->getGender() == GENDER_FEMALE ? 1 : 0];
         for (uint8 i = 0; i < 5; ++i)
@@ -166,12 +166,25 @@ public:
             s.worgen = { f[7].Get<uint8>(), f[8].Get<uint8>(), f[9].Get<uint8>(), f[10].Get<uint8>(), f[11].Get<uint8>() };
             if (wasHuman)
             {
-                // the last save may hold the human look: give the character its Worgen look back
+                // the last save may hold the human look: give the character its Worgen look back, and write it to the
+                // character row in the same transaction that clears is_human, so a crash can not lose the Worgen look
                 Wear(player, s.worgen);
-                Store(player, s);
+                CharacterDatabaseTransaction trans = CharacterDatabase.BeginTransaction();
+                trans->Append("UPDATE characters SET skin = {}, face = {}, hairStyle = {}, hairColor = {}, facialStyle = {} WHERE guid = {}",
+                    s.worgen.skin, s.worgen.face, s.worgen.hair, s.worgen.color, s.worgen.facial, player->GetGUID().GetCounter());
+                trans->Append("UPDATE mod_temucraft_two_forms SET is_human = 0 WHERE guid = {}", player->GetGUID().GetCounter());
+                CharacterDatabase.CommitTransaction(trans);
             }
         }
         states[player->GetGUID().GetCounter()] = s;
+    }
+
+    // before the logout save, so the character is saved with its Worgen look
+    void OnPlayerBeforeLogout(Player* player) override
+    {
+        auto it = states.find(player->GetGUID().GetCounter());
+        if (it != states.end() && it->second.isHuman)
+            ToWorgen(player, it->second);
     }
 
     void OnPlayerLogout(Player* player) override { states.erase(player->GetGUID().GetCounter()); }
@@ -200,9 +213,9 @@ public:
         if (menu != MENU || !IsWorgen(player))
             return;
         State& s = states[player->GetGUID().GetCounter()];
-        if (action == 100)
+        if (action == 100 || (cfg.dropInCombat && player->IsInCombat()))
         {
-            CloseGossipMenuFor(player);
+            CloseGossipMenuFor(player);   // the picker shows the human form, which is not for combat
             return;
         }
         uint8* values[5] = { &s.human.skin, &s.human.face, &s.human.hair, &s.human.color, &s.human.facial };
@@ -230,6 +243,8 @@ class spell_temucraft_two_forms : public SpellScript
         State& s = states[player->GetGUID().GetCounter()];
         if (s.isHuman)
             ToWorgen(player, s);
+        else if (cfg.dropInCombat && player->IsInCombat())
+            return;   // the human form is not for combat
         else if (!s.chosen)
             ShowPicker(player);   // the first time: pick a human look
         else
@@ -261,6 +276,11 @@ public:
         if (!IsWorgen(player))
         {
             handler->SendSysMessage(T(player, 9, "Only Worgen have Two Forms."));
+            return true;
+        }
+        if (cfg.dropInCombat && player->IsInCombat())
+        {
+            handler->SendSysMessage(T(player, 10, "Not in combat."));
             return true;
         }
         ShowPicker(player);

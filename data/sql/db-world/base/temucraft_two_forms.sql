@@ -14,4 +14,5 @@ INSERT INTO `module_string` (`module`, `id`, `string`) VALUES
 ('mod-temucraft-two-forms', 7, 'previous'),
 ('mod-temucraft-two-forms', 8, 'Done'),
 ('mod-temucraft-two-forms', 9, 'Only Worgen have Two Forms.'),
-('mod-temucraft-two-forms', 10, 'Not in combat.');
+('mod-temucraft-two-forms', 10, 'Not in combat.'),
+('mod-temucraft-two-forms', 11, 'Earrings and markings');
