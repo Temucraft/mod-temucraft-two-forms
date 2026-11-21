@@ -19,6 +19,7 @@
 #include "CommandScript.h"
 #include "Config.h"
 #include "DatabaseEnv.h"
+#include "GameObject.h"
 #include "Player.h"
 #include "ScriptMgr.h"
 #include "ScriptedGossip.h"
@@ -326,8 +327,29 @@ public:
     }
 };
 
+// the barber shop changes the Worgen look: a Worgen in human form turns back before sitting down, so the change is kept
+class TemucraftTwoForms_Barber : public AllGameObjectScript
+{
+public:
+    TemucraftTwoForms_Barber() : AllGameObjectScript("TemucraftTwoForms_Barber") { }
+
+    bool CanGameObjectGossipHello(Player* player, GameObject* go) override
+    {
+        if (go->GetGoType() != GAMEOBJECT_TYPE_BARBER_CHAIR || !IsWorgen(player))
+            return false;
+        auto it = states.find(player->GetGUID().GetCounter());
+        if (it != states.end() && it->second.isHuman)
+        {
+            ToWorgen(player, it->second);
+            ChatHandler(player->GetSession()).SendSysMessage(TemucraftModuleText(MODULE, player, 12, "The barber works on your Worgen form: you change back first."));
+        }
+        return false;   // the chair works as usual
+    }
+};
+
 void AddTemucraftTwoFormsScripts()
 {
+    new TemucraftTwoForms_Barber();
     new TemucraftTwoForms_Player();
     RegisterSpellScript(spell_temucraft_two_forms);
     new TemucraftTwoForms_Command();
