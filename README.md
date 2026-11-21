@@ -7,10 +7,10 @@ this module, Two Forms puts the Worgen in the **human player body** (the same bo
 your gear like any player.
 
 - **Your human look:** the Worgen's skin, face and hair numbers would pick random human options, so each character picks
-  a human look once. The first time you use Two Forms (or with `.twoforms look`) a menu opens: skin colour, face, hair
+  a human look once. The first time you use Two Forms (or with `.temucraft twoforms look`) a menu opens: skin colour, face, hair
   style, hair colour and beard (earrings and markings for women), each with next and previous. You see every change at
   once.
-- **Switching:** the Two Forms racial, or `.twoforms`. Entering combat or casting Darkflight turns you back into a Worgen
+- **Switching:** the Two Forms racial, or `.temucraft twoforms`. Entering combat or casting Darkflight turns you back into a Worgen
   (`Temucraft.TwoForms.WorgenInCombat`). Druid forms and disguises still work: you come back to the human body after them.
 - **Safe saves:** the look values are part of the saved character, so the Worgen look is kept in the characters table
   `mod_temucraft_two_forms` and put back at the next login. You always log in as a Worgen.

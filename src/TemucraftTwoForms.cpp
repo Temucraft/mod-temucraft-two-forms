@@ -10,7 +10,7 @@
 // The stock spell turns a Worgen into a creature display of a human: a fixed NPC with none of the player's armour.
 // Here Two Forms puts the Worgen in the human player body instead (the body a human character has), which shows the
 // gear. The Worgen's skin, face and hair numbers would pick random human options, so each character chooses a human
-// look once (.twoforms look) and it is swapped in while in human form, and the Worgen look swapped back after.
+// look once (.temucraft twoforms look) and it is swapped in while in human form, and the Worgen look swapped back after.
 //
 // The look values are part of what the server saves for a character, so the Worgen look is also kept in
 // mod_temucraft_two_forms and put back when the character logs in (a save can happen while in human form).
@@ -263,10 +263,10 @@ public:
     {
         static ChatCommandTable sub =
         {
-            { "look", HandleLook, SEC_PLAYER, Console::No },
-            { "",     HandleToggle, SEC_PLAYER, Console::No },
+            { "look", HandleLook, 103450, Console::No },
+            { "",     HandleToggle, 103451, Console::No },
         };
-        static ChatCommandTable root = { { "twoforms", sub } };
+        static ChatCommandTable root = { { "temucraft twoforms", sub } };
         return root;
     }
 
