@@ -15,6 +15,7 @@
 // The look values are part of what the server saves for a character, so the Worgen look is also kept in
 // mod_temucraft_two_forms and put back when the character logs in (a save can happen while in human form).
 
+#include "TemucraftLocked.h"
 #include "Chat.h"
 #include "CommandScript.h"
 #include "Config.h"
@@ -54,7 +55,7 @@ namespace
         bool isHuman = false;
         uint32 worgenNative = 0;
     };
-    std::unordered_map<ObjectGuid::LowType, State> states;
+    Temucraft::LockedMap<ObjectGuid::LowType, State> states;
 
     // how many choices the human body has, by gender (male, female)
     uint8 const LIMITS[2][5] = { { 10, 12, 17, 10, 9 }, { 10, 15, 24, 10, 7 } };
