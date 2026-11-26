@@ -348,6 +348,20 @@ public:
     }
 };
 
+// a deleted character's two looks go with it
+// OnPlayerDeleteFromDB: only when the character is really removed (not a CharDelete.Method = 1 unlink, which can be
+// restored), and in the same transaction as the core's own deletes.
+class TemucraftTwoForms_Delete : public PlayerScript
+{
+public:
+    TemucraftTwoForms_Delete() : PlayerScript("TemucraftTwoForms_Delete", { PLAYERHOOK_ON_DELETE_FROM_DB }) { }
+
+    void OnPlayerDeleteFromDB(CharacterDatabaseTransaction trans, uint32 guid) override
+    {
+        trans->Append("DELETE FROM `mod_temucraft_two_forms` WHERE `guid` = {}", guid);
+    }
+};
+
 void AddTemucraftTwoFormsScripts()
 {
     new TemucraftTwoForms_Barber();
@@ -355,4 +369,5 @@ void AddTemucraftTwoFormsScripts()
     RegisterSpellScript(spell_temucraft_two_forms);
     new TemucraftTwoForms_Command();
     new TemucraftTwoForms_World();
+    new TemucraftTwoForms_Delete();
 }
