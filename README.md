@@ -20,6 +20,10 @@ your gear like any player.
 Put the folder in `modules/`, re-run CMake, build, copy the conf file. The world SQL points the Two Forms spells
 (68996 male, 68995 female, taught by mod-worgoblin-high-elf) at this module's script; the characters SQL adds the table.
 
+A character deleted for good (`OnPlayerDeleteFromDB`, in the same transaction as the core's own deletes; not a `CharDelete.Method = 1` unlink, which can be restored) takes its `mod_temucraft_two_forms` row with it.
+`data/sql/db-characters/base/mod_temucraft_two_forms_character_cleanup.sql` removes rows of characters deleted before;
+it is safe to run again.
+
 ## Not tested in game yet
 
 What to check: the human body shows your armour and weapons; the picked look is right (skin, face, hair, colour,
